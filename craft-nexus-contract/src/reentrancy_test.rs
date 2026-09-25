@@ -952,11 +952,15 @@ mod stake_reentry_token {
             env.storage()
                 .instance()
                 .set(&Symbol::new(&env, "artisan"), &artisan);
-            env.storage().instance().set(&Symbol::new(&env, "armed"), &false);
+            env.storage()
+                .instance()
+                .set(&Symbol::new(&env, "armed"), &false);
         }
 
         pub fn arm(env: Env) {
-            env.storage().instance().set(&Symbol::new(&env, "armed"), &true);
+            env.storage()
+                .instance()
+                .set(&Symbol::new(&env, "armed"), &true);
         }
 
         pub fn decimals(_env: Env) -> u32 {
@@ -1014,11 +1018,15 @@ mod unstake_reentry_token {
             env.storage()
                 .instance()
                 .set(&Symbol::new(&env, "artisan"), &artisan);
-            env.storage().instance().set(&Symbol::new(&env, "armed"), &false);
+            env.storage()
+                .instance()
+                .set(&Symbol::new(&env, "armed"), &false);
         }
 
         pub fn arm(env: Env) {
-            env.storage().instance().set(&Symbol::new(&env, "armed"), &true);
+            env.storage()
+                .instance()
+                .set(&Symbol::new(&env, "armed"), &true);
         }
 
         pub fn decimals(_env: Env) -> u32 {
@@ -1047,8 +1055,7 @@ mod unstake_reentry_token {
                     .get(&Symbol::new(&env, "artisan"))
                     .unwrap();
                 let this_token = env.current_contract_address();
-                CraftNexusContractClient::new(&env, &target)
-                    .unstake_tokens(&artisan, &this_token);
+                CraftNexusContractClient::new(&env, &target).unstake_tokens(&artisan, &this_token);
             }
         }
     }
@@ -1072,11 +1079,15 @@ mod refund_reentry_token {
             env.storage()
                 .instance()
                 .set(&Symbol::new(&env, "order"), &order_id);
-            env.storage().instance().set(&Symbol::new(&env, "armed"), &false);
+            env.storage()
+                .instance()
+                .set(&Symbol::new(&env, "armed"), &false);
         }
 
         pub fn arm(env: Env) {
-            env.storage().instance().set(&Symbol::new(&env, "armed"), &true);
+            env.storage()
+                .instance()
+                .set(&Symbol::new(&env, "armed"), &true);
         }
 
         pub fn decimals(_env: Env) -> u32 {
@@ -1222,14 +1233,7 @@ fn malicious_token_cannot_reenter_refund() {
     let token_id = env.register_contract(None, RefundReentryToken);
     RefundReentryTokenClient::new(&env, &token_id).initialize(&contract_id, &order_id);
 
-    client.create_escrow(
-        &buyer,
-        &seller,
-        &token_id,
-        &5_000,
-        &order_id,
-        &Some(86_400),
-    );
+    client.create_escrow(&buyer, &seller, &token_id, &5_000, &order_id, &Some(86_400));
 
     // Arm the callback only now: escrow creation itself must go through
     // unaffected, so any failure below is attributable to the refund attack.
